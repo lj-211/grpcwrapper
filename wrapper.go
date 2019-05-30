@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
+
+	"grpcwrapper/middleware"
 )
 
 var (
@@ -115,6 +117,7 @@ func (e *Engine) UseDefaultKeepaliveOpt() {
 
 func Default() *Engine {
 	e := &Engine{}
-	// todo: 增加系统默认中间件
+	e.Use(middleware.UnaryServerRecoverInterceptor(),
+		middleware.StreamServerRecoverInterceptor())
 	return e
 }

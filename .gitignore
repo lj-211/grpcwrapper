@@ -13,7 +13,6 @@
 .settings/
 .vscode/
 vender/
-log/
 composer.lock
 gitpush.sh
 pkg/
@@ -24,4 +23,3 @@ config/config.toml
 main
 .vscode
 go.sum
-med-medication
