@@ -1,8 +1,9 @@
 package log
 
-/*
 import (
+	"fmt"
 	"github.com/lj-211/common/cmodel"
+	"github.com/lj-211/common/ecode"
 )
 
 var logger cmodel.Logger = nil
@@ -11,6 +12,7 @@ func Info(args ...interface{}) {
 	if logger != nil {
 		logger.Info(args...)
 	}
+	fmt.Println(ecode.String("1"))
 }
 
 func Infof(format string, args ...interface{}) {
@@ -58,4 +60,3 @@ func Errorf(format string, args ...interface{}) {
 func SetLogger(log cmodel.Logger) {
 	logger = log
 }
-*/

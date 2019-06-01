@@ -9,7 +9,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	//"grpcwrapper/log"
+
+	"github.com/lj-211/grpcwrapper/log"
 )
 
 func get_stack() string {
@@ -30,7 +31,7 @@ func UnaryServerRecoverInterceptor() grpc.UnaryServerInterceptor {
 				sinfo := get_stack()
 				linfo := fmt.Sprintf("server panic: %v %v %s", req, rerr, sinfo)
 				fmt.Fprintf(os.Stderr, linfo)
-				//log.Error(linfo)
+				log.Error(linfo)
 				err = status.Errorf(codes.Unknown, "server panic")
 			}
 		}()
