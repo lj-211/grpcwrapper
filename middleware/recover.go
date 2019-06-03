@@ -7,9 +7,10 @@ import (
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	//"google.golang.org/grpc/codes"
+	//"google.golang.org/grpc/status"
 
+	"github.com/lj-211/common/ecode"
 	"github.com/lj-211/grpcwrapper/log"
 )
 
@@ -31,8 +32,8 @@ func UnaryServerRecoverInterceptor() grpc.UnaryServerInterceptor {
 				sinfo := get_stack()
 				linfo := fmt.Sprintf("server panic: %v %v %s", req, rerr, sinfo)
 				fmt.Fprintf(os.Stderr, linfo)
-				log.Error(linfo)
-				err = status.Errorf(codes.Unknown, "server panic")
+				log.Errorf(linfo)
+				err = ecode.Errorf(ecode.ServerErr, "server panic")
 			}
 		}()
 		resp, err = handler(ctx, req)
@@ -45,11 +46,29 @@ func StreamServerRecoverInterceptor() grpc.StreamServerInterceptor {
 		defer func() {
 			if rerr := recover(); rerr != nil {
 				sinfo := get_stack()
-				log.Errorf("server panic: %v %v %s ", stream, rerr, sinfo)
-				err = status.Errorf(codes.Unknown, "server panic")
+				linfo := fmt.Sprintf("server panic: %v %v %s", stream, rerr, sinfo)
+				fmt.Fprintln(os.Stderr, linfo)
+				log.Errorf(linfo)
+				err = ecode.Errorf(ecode.ServerErr, "server panic")
 			}
 		}()
 		err = handler(srv, stream)
+		return
+	}
+}
+
+func UnaryClientRecoverInterceptor() grpc.UnaryClientInterceptor {
+	return func(ctx context.Context, method string, req, reply interface{},
+		cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) (err error) {
+		defer func() {
+			if rerr := recover(); rerr != nil {
+				sinfo := get_stack()
+				linfo := fmt.Sprintf("server panic: %v %v %s", req, rerr, sinfo)
+				fmt.Fprintln(os.Stderr, linfo)
+				err = ecode.Errorf(ecode.ServerErr, "server panic")
+			}
+		}()
+		err = invoker(ctx, method, req, reply, cc, opts...)
 		return
 	}
 }

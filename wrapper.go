@@ -117,6 +117,7 @@ func (e *Engine) UseDefaultKeepaliveOpt() {
 
 func Default() *Engine {
 	e := &Engine{}
+	e.Use(middleware.UnaryServerErrorHook, middleware.StreamServerErrorHook)
 	e.Use(middleware.UnaryServerRecoverInterceptor(),
 		middleware.StreamServerRecoverInterceptor())
 	return e
