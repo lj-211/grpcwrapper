@@ -2,11 +2,14 @@ package grpcwrapper
 
 import (
 	"context"
+	"time"
 
 	"google.golang.org/grpc"
 
 	"github.com/lj-211/grpcwrapper/middleware"
 )
+
+var defaultDialTimeout = time.Second * 3
 
 type ClientOpt struct {
 	Interceptors []grpc.UnaryClientInterceptor
@@ -32,7 +35,9 @@ func (co *ClientOpt) DialContext(ctx context.Context, target string,
 	dops = append(dops, grpc.WithInsecure())
 	dops = append(dops, opts...)
 
-	conn, err = grpc.DialContext(ctx, target, dops...)
+	new_ctx, cancel := context.WithTimeout(ctx, defaultDialTimeout)
+	conn, err = grpc.DialContext(new_ctx, target, dops...)
+	defer cancel()
 
 	return
 }
