@@ -15,7 +15,6 @@ func ClientErrorHook(ctx context.Context, method string, req, reply interface{},
 
 	gst, ok := gstatus.FromError(err)
 	if ok {
-		fmt.Println("client: convert err to ecode")
 		ec := ToEcode(gst)
 		err = errors.WithMessage(ec, gst.Message())
 	}
