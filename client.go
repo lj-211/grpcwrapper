@@ -13,6 +13,7 @@ var defaultDialTimeout = time.Second * 3
 
 type ClientOpt struct {
 	Interceptors []grpc.UnaryClientInterceptor
+	CallBlock    bool
 }
 
 var defaultClientOpt *ClientOpt = &ClientOpt{
@@ -33,6 +34,9 @@ func (co *ClientOpt) DialContext(ctx context.Context, target string,
 	dops = append(dops, grpc.WithUnaryInterceptor(ChainUnaryClient(co.Interceptors)))
 
 	dops = append(dops, grpc.WithInsecure())
+	if co.CallBlock {
+		dops = append(dops, grpc.WithBlock())
+	}
 	dops = append(dops, opts...)
 
 	new_ctx, cancel := context.WithTimeout(ctx, defaultDialTimeout)
