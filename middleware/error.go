@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	gstatus "google.golang.org/grpc/status"
 )
