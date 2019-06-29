@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -26,7 +25,6 @@ func UnaryServerErrorHook(ctx context.Context, req interface{}, info *grpc.Unary
 	handler grpc.UnaryHandler) (resp interface{}, err error) {
 	resp, err = handler(ctx, req)
 	if err != nil {
-		fmt.Println("server: convert err to grpc.Status")
 		err = FromError(err).Err()
 	}
 	return
