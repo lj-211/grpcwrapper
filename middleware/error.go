@@ -12,10 +12,12 @@ func ClientErrorHook(ctx context.Context, method string, req, reply interface{},
 	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	err := invoker(ctx, method, req, reply, cc, opts...)
 
-	gst, ok := gstatus.FromError(err)
-	if ok {
-		ec := ToEcode(gst)
-		err = errors.WithMessage(ec, gst.Message())
+	if err != nil {
+		gst, ok := gstatus.FromError(err)
+		if ok {
+			ec := ToEcode(gst)
+			err = ec
+		}
 	}
 
 	return err
